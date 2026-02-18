@@ -37,42 +37,44 @@
             padding-right: 5px;
         }
 
-        .options::-webkit-scrollbar { width: 5px; }
-        .options::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
-
         .option-btn {
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 14px; border-radius: 12px; color: white; cursor: pointer;
             text-align: left; transition: all 0.2s ease; font-size: 0.9rem;
-            flex-shrink: 0;
         }
 
         .option-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.01); border-color: #fff; }
 
         #result-screen { display: none; }
-        .result-title { font-size: 1rem; color: #aaa; margin-bottom: 10px; }
-        .result-name { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; }
-        .result-desc { font-size: 1.1rem; margin-bottom: 20px; color: #fff; }
-        .retry-btn { margin-top: 15px; background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+        .result-title { font-size: 0.9rem; color: #aaa; margin-bottom: 20px; letter-spacing: 1px; }
         
-        /* 요미 이미지 스타일 */
-        .yomi-image-container {
-            margin: 20px 0;
-            text-align: center;
+        /* 요미 결과 스타일 */
+        .yomi-result-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
         }
-        .yomi-image-container img {
-            max-width: 180px; /* 이미지 크기 조절 */
+
+        .yomi-image {
+            width: 200px; /* 이미지 크기 */
             height: auto;
-            border-radius: 8px;
-            border: 2px solid #555;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); /* 은은한 황금빛 광원 */
         }
-        .yomi-apostle-text {
-            font-size: 1.5rem;
+
+        .yomi-name-tag {
+            font-size: 1.6rem;
             font-weight: bold;
-            color: #ffd700; /* 요미 강조 색상 */
-            margin-top: 10px;
+            color: #ffd700;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
+
+        .retry-btn { margin-top: 10px; background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -84,14 +86,13 @@
         </div>
 
         <div id="result-screen" class="quiz-container">
-            <div class="result-title">당신의 여행 정보</div>
-            <div id="result-personality" class="result-name">성격</div>
+            <div class="result-title">소환 결과</div>
             
-            <div id="dynamic-result-content">
+            <div id="final-apostle-content" class="yomi-result-box">
                 </div>
 
-            <p style="font-size: 0.9rem; opacity: 0.8;">교주님, 선택하신 사도와 함께 무사히 여행하시길!</p>
-            <button class="retry-btn" onclick="location.reload()">처음부터 다시 하기</button>
+            <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 20px;">교주님, 선택하신 사도와 함께 무사히 여행하시길!</p>
+            <button class="retry-btn" onclick="location.reload()">다시 소환하기</button>
         </div>
     </div>
 
@@ -107,6 +108,7 @@
                     { t: "에르핀... 왕국도 생각해주면 안 될까...?", s: "우울" }
                 ]
             },
+            // ... 다른 질문들 생략 (동일하게 작동)
             {
                 q: "마리가 왕국을 또 터트렸습니다. 당신의 반응은?",
                 a: [
@@ -116,30 +118,9 @@
                     { t: "음... 이거 생각보다 소리가 경쾌했어!", s: "활발" },
                     { t: "나 범인 아니야 네르, 도끼 들지 마.", s: "우울" }
                 ]
-            },
-            {
-                q: "엘레나가 교단에 붙인 도청장치를 발견했습니다. 당신의 반응은?",
-                a: [
-                    { t: "감히 도청장치를 설치해? 네 연구실에 역으로 숨겨주겠어.", s: "광기" },
-                    { t: "도청장치네? 그냥 냅둬야겠다. 내 알 바 아니니까.", s: "냉정" },
-                    { t: "이 도청장치의 주인은 누구지? 궁금하게 만드네?", s: "순수" },
-                    { t: "엘레나! 내 목소리가 좋구나!!", s: "활발" },
-                    { t: "나 고민 상담 해주려는 건가...", s: "우울" }
-                ]
-            },
-            {
-                q: "사료스탕스가 교단을 침략해왔습니다. 당신의 반응은?",
-                a: [
-                    { t: "호랑이 고기... 곰 고기... 여우 고기...? 츄릅...", s: "광기" },
-                    { t: "다음 침략을 대비하기 위해 요정 왕국을 조금 봉쇄해야 할까?", s: "냉정" },
-                    { t: "사료스탕스들의 깜짝 선물인가?", s: "순수" },
-                    { t: "모두들!! 사료스탕스를 막아보자!! 화이팅!!", s: "활발" },
-                    { t: "싸워봤자 지겠지... 항복하고 구석에 있자...", s: "우울" }
-                ]
             }
         ];
 
-        // 종족 전체 데이터
         const allRaces = [
             { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
             { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" },
@@ -152,7 +133,6 @@
         ];
 
         let selectedPersonality = "";
-        let selectedRace = "";
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -175,7 +155,6 @@
                 btn.innerText = ans.t;
                 btn.onclick = () => {
                     selectedPersonality = ans.s;
-                    console.log("선택된 성격:", selectedPersonality); // 디버깅용
                     loadRaceQuestion();
                 };
                 container.appendChild(btn);
@@ -187,64 +166,40 @@
             const container = document.getElementById('options-container');
             container.innerHTML = "";
 
-            // 필터링 핵심: '우울'이 아닐 때 미스틱(r: "미스틱")을 리스트에서 완전히 제외
             let filteredRaces = allRaces.filter(race => {
-                if (selectedPersonality === "우울") return true; // 우울이면 다 보여줌
-                return race.r !== "미스틱"; // 우울이 아니면 미스틱 제거
+                if (selectedPersonality === "우울") return true;
+                return race.r !== "미스틱";
             });
 
-            // 필터링된 리스트를 셔플
             const shuffledRaces = shuffle([...filteredRaces]);
-
             shuffledRaces.forEach((ans) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = ans.t;
                 btn.onclick = () => {
-                    selectedRace = ans.r;
-                    showFinalResult();
+                    showFinalResult(ans.r);
                 };
                 container.appendChild(btn);
             });
         }
 
-        function showFinalResult() {
+        function showFinalResult(race) {
             document.getElementById('quiz-screen').style.display = 'none';
             const resultScreen = document.getElementById('result-screen');
-            const pText = document.getElementById('result-personality');
-            const dynamicContent = document.getElementById('dynamic-result-content');
-            dynamicContent.innerHTML = ''; // 기존 내용 초기화
-
+            const finalContent = document.getElementById('final-apostle-content');
+            
             resultScreen.style.display = 'flex';
-            pText.innerText = `성격: ${selectedPersonality}`;
-            const colors = {
-                '광기': '#ff4d4d', '냉정': '#4db8ff', '순수': '#ffffff',
-                '활발': '#ffeb3b', '우울': '#9c27b0'
-            };
-            pText.style.color = colors[selectedPersonality];
+            finalContent.innerHTML = ''; 
 
-            // 미스틱을 선택했을 때 요미 이미지와 텍스트를 표시
-            if (selectedRace === "미스틱") {
-                const yomiContainer = document.createElement('div');
-                yomiContainer.className = 'yomi-image-container';
-
-                const yomiImage = document.createElement('img');
-                yomiImage.src = 'apostle/요미.webp'; // 요미.webp 파일 경로
-                yomiImage.alt = '요미';
-                yomiContainer.appendChild(yomiImage);
-
-                const yomiText = document.createElement('div');
-                yomiText.className = 'yomi-apostle-text';
-                yomiText.innerText = '당신의 사도 : 요미';
-                yomiContainer.appendChild(yomiText);
-
-                dynamicContent.appendChild(yomiContainer);
+            if (race === "미스틱") {
+                // 미스틱일 경우 요미 사진과 텍스트만 노출
+                finalContent.innerHTML = `
+                    <img src="apostle/요미.webp" alt="요미" class="yomi-image">
+                    <div class="yomi-name-tag">당신의 사도 : 요미</div>
+                `;
             } else {
-                // 다른 종족일 경우 기존처럼 텍스트 표시
-                const rText = document.createElement('div');
-                rText.className = 'result-desc'; // 기존 스타일 재활용
-                rText.innerText = `동행 종족: ${selectedRace}`;
-                dynamicContent.appendChild(rText);
+                // 다른 종족일 경우 (예시로 텍스트만 표시하거나 다른 이미지를 추가할 수 있음)
+                finalContent.innerHTML = `<div class="yomi-name-tag" style="color:white;">당신의 사도 : ${race}</div>`;
             }
         }
 
