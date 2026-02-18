@@ -184,12 +184,17 @@
 
         function loadPositionQuestion() {
             document.getElementById('question-text').innerText = "당신이 좋아하는 사도를 지켜주고 싶으면, 어디 열에 있을것인가요?";
+            
             let options = [
                 { t: "전열", r: "전열" },
                 { t: "중열", r: "중열" },
                 { t: "후열", r: "후열" }
             ];
-            if (selectedRace === "요정") options.push({ t: "모든 열", r: "모든 열" });
+
+            // 우울 성격 + 요정 종족일 때만 "모든 열" 추가
+            if (selectedPersonality === "우울" && selectedRace === "요정") {
+                options.push({ t: "모든 열", r: "모든 열" });
+            }
 
             createButtons(options, (pos) => {
                 selectedPos = pos;
@@ -203,21 +208,19 @@
             const finalArea = document.getElementById('final-area');
             resultScreen.style.display = 'flex';
 
-            // 미스틱 -> 요미
             if (selectedRace === "미스틱") {
                 finalArea.innerHTML = `
                     <img src="apostle/요미.webp" class="result-image">
                     <div class="result-text">당신의 사도 : 요미</div>
                 `;
             } 
-            // 요정 + 모든 열 -> 죠안
+            // 요정 + 모든 열 (우울 루트) -> 죠안
             else if (selectedRace === "요정" && selectedPos === "모든 열") {
                 finalArea.innerHTML = `
                     <img src="apostle/죠안.png" class="result-image">
                     <div class="result-text">당신의 사도 : 죠안</div>
                 `;
             }
-            // 그 외 일반 종족 결과
             else {
                 finalArea.innerHTML = `<div class="result-text" style="color:white; margin: 40px 0;">당신의 사도 : ${selectedRace}</div>`;
             }
