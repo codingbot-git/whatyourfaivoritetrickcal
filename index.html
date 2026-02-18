@@ -186,14 +186,18 @@
             document.getElementById('question-text').innerText = "당신이 좋아하는 사도를 지켜주고 싶으면, 어디 열에 있을것인가요?";
             
             let options = [
-                { t: "전열", r: "전열" },
-                { t: "중열", r: "중열" },
-                { t: "후열", r: "후열" }
+                { t: "모두를 지킬 든든한 열", r: "전열" },
+                { t: "딱 평균적인 열", r: "중열" },
+                { t: "저격하기 좋은 열", r: "후열" }
             ];
 
-            // 우울 성격 + 요정 종족일 때만 "모든 열" 추가
+            // 분기 1: 우울 성격 + 요정 종족
             if (selectedPersonality === "우울" && selectedRace === "요정") {
-                options.push({ t: "모든 열", r: "모든 열" });
+                options.push({ t: "그 어디에 있어도 완벽한 열", r: "모든 열" });
+            }
+            // 분기 2: 광기 성격 + 수인 종족
+            else if (selectedPersonality === "광기" && selectedRace === "수인") {
+                options.push({ t: "그 어디에 있어도 완벽한 열", r: "모든 열" });
             }
 
             createButtons(options, (pos) => {
@@ -208,19 +212,28 @@
             const finalArea = document.getElementById('final-area');
             resultScreen.style.display = 'flex';
 
+            // 1. 미스틱 -> 요미
             if (selectedRace === "미스틱") {
                 finalArea.innerHTML = `
                     <img src="apostle/요미.webp" class="result-image">
                     <div class="result-text">당신의 사도 : 요미</div>
                 `;
             } 
-            // 요정 + 모든 열 (우울 루트) -> 죠안
+            // 2. 우울 + 요정 + 모든 열 -> 죠안
             else if (selectedRace === "요정" && selectedPos === "모든 열") {
                 finalArea.innerHTML = `
                     <img src="apostle/죠안.png" class="result-image">
                     <div class="result-text">당신의 사도 : 죠안</div>
                 `;
             }
+            // 3. 광기 + 수인 + 모든 열 -> 티그(영웅)
+            else if (selectedRace === "수인" && selectedPos === "모든 열") {
+                finalArea.innerHTML = `
+                    <img src="apostle/티그 영웅.webp" class="result-image">
+                    <div class="result-text">당신의 사도 : 티그(영웅)</div>
+                `;
+            }
+            // 4. 일반 결과
             else {
                 finalArea.innerHTML = `<div class="result-text" style="color:white; margin: 40px 0;">당신의 사도 : ${selectedRace}</div>`;
             }
