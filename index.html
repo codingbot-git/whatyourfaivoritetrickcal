@@ -11,19 +11,79 @@
             height: 100%;
             overflow: hidden;
             background-color: #000;
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
         }
 
         .bg-image {
-            /* 경로를 background/ 폴더 내부로 지정했습니다 */
             background-image: url('background/startingimage.jpg');
             height: 100%;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 질문 상자 스타일 */
+        .quiz-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 90%;
+            color: white;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            word-break: keep-all;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(10px);
         }
     </style>
 </head>
 <body>
-    <div class="bg-image"></div>
+
+    <div class="bg-image">
+        <div class="quiz-container">
+            <h2>에르핀이 또 대형 사고를 쳤습니다.<br>현장을 목격한 당신의 반응은?</h2>
+            <div class="options">
+                <button class="option-btn">1. "와하하! 역시 에르핀이야! 이왕 이렇게 된 거 다 같이 박살 내버릴까?"</button>
+                <button class="option-btn">2. "피해 규모 산출해. 그리고 에르핀, 너는 반성실로 가서 경위서 작성해."</button>
+                <button class="option-btn">3. "에헤헤... 에르핀도 그럴 만한 이유가 있었겠지? 같이 치우면 금방이야!"</button>
+                <button class="option-btn">4. "아자아자! 벌써 다 망가뜨린 거야? 그럼 이제 새로운 걸 만들러 가자!"</button>
+                <button class="option-btn">5. "결국 이렇게 될 줄 알았어... 어차피 나 때문이겠지... 하아..."</button>
+                <button class="option-btn">6. "너의 그 넘치는 에너지가 느껴지는군. 이 파동, 나쁘지 않아."</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
