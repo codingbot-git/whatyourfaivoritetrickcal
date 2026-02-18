@@ -2,45 +2,62 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>What your favorite Trickcal</title>
     <style>
+        /* 전체 화면 스크롤 제거 */
         body, html {
-            margin: 0; padding: 0; height: 100%; overflow: hidden;
+            margin: 0; padding: 0; 
+            height: 100%; width: 100%;
+            overflow: hidden; /* 외부 스크롤 원천 차단 */
             background-color: #000;
             font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
         }
 
         .bg-image {
             background-image: url('background/startingimage.jpg');
-            height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;
+            height: 100%; width: 100%;
+            background-position: center; background-repeat: no-repeat; background-size: cover;
             display: flex; justify-content: center; align-items: center;
         }
 
         .quiz-container {
-            background: rgba(0, 0, 0, 0.75); padding: 30px; border-radius: 20px;
+            background: rgba(0, 0, 0, 0.75); padding: 25px; border-radius: 20px;
             border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(15px);
-            max-width: 500px; width: 95%; color: white; text-align: center;
+            max-width: 450px; width: 85%; color: white; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            /* 컨테이너 자체가 화면보다 커지지 않게 제한 */
+            max-height: 90vh; 
+            display: flex; flex-direction: column;
         }
 
-        h2 { margin-bottom: 25px; font-size: 1.3rem; line-height: 1.5; word-break: keep-all; }
+        h2 { margin-bottom: 20px; font-size: 1.2rem; line-height: 1.5; word-break: keep-all; flex-shrink: 0; }
         
-        .options { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
+        /* 선택지 영역 - 이 안에서만 스크롤이 생기도록 설정 */
+        .options { 
+            display: flex; flex-direction: column; gap: 8px; 
+            overflow-y: auto; /* 내용이 많으면 내부에서만 스크롤 */
+            padding-right: 5px;
+        }
+
+        /* 내부 스크롤바 디자인 (크롬/사파리) */
+        .options::-webkit-scrollbar { width: 5px; }
+        .options::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
 
         .option-btn {
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 12px; border-radius: 12px; color: white; cursor: pointer;
+            padding: 14px; border-radius: 12px; color: white; cursor: pointer;
             text-align: left; transition: all 0.2s ease; font-size: 0.9rem;
+            flex-shrink: 0; /* 버튼 형태 유지 */
         }
 
         .option-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.01); border-color: #fff; }
 
         #result-screen { display: none; }
-        .result-title { font-size: 1.1rem; color: #aaa; margin-bottom: 10px; }
-        .result-name { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
-        .result-desc { font-size: 1.2rem; margin-bottom: 20px; color: #fff; }
-        .retry-btn { margin-top: 20px; background: #fff; color: #000; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .result-title { font-size: 1rem; color: #aaa; margin-bottom: 10px; }
+        .result-name { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; }
+        .result-desc { font-size: 1.1rem; margin-bottom: 20px; color: #fff; }
+        .retry-btn { margin-top: 15px; background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -55,13 +72,12 @@
             <div class="result-title">당신의 여행 정보</div>
             <div id="result-personality" class="result-name">성격</div>
             <div id="result-race" class="result-desc">종족</div>
-            <p>교주님, 선택하신 사도와 함께 무사히 여행하시길!</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">교주님, 선택하신 사도와 함께 무사히 여행하시길!</p>
             <button class="retry-btn" onclick="location.reload()">처음부터 다시 하기</button>
         </div>
     </div>
 
     <script>
-        // 첫 번째 질문 리스트 (성격 5종 중 랜덤 1개 등장)
         const personalityQuestions = [
             {
                 q: "에르핀이 교단의 1년치 예산을 전부 간식으로 바꿔버렸습니다! 당신의 반응은?",
@@ -105,18 +121,17 @@
             }
         ];
 
-        // 두 번째 질문 (종족 8종)
         const raceQuestion = {
             q: "당신과 동행할 사도는?",
             a: [
                 { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
-                { t: "세계수에게 기도를하며, 마법을 쓰는 사도", r: "요정" },
+                { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" },
                 { t: "지능이 있고, 엘리아스에서 가장 현대적인 사도", r: "엘프" },
                 { t: "뭔가 하나에 꽂히면 그것만 생각하는 사도", r: "용족" },
                 { t: "신비롭지만 알 수 없는 사도", r: "미스틱" },
                 { t: "저마다의 현명함과 박식함을 보유하고 있는 사도", r: "마녀" },
                 { t: "장난을 좋아하는 사도", r: "유령" },
-                { t: "별게 다있는 사도", r: "정령" }
+                { t: "별게 다 있는 사도", r: "정령" }
             ]
         };
 
@@ -131,68 +146,54 @@
             return array;
         }
 
-        // 1단계: 성격 질문 무작위 출력
         function initQuiz() {
             const randomIdx = Math.floor(Math.random() * personalityQuestions.length);
             const selectedQ = personalityQuestions[randomIdx];
-
             document.getElementById('question-text').innerText = selectedQ.q;
             const container = document.getElementById('options-container');
             container.innerHTML = "";
-            
             const shuffledAnswers = shuffle([...selectedQ.a]);
-            
             shuffledAnswers.forEach((ans) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = ans.t;
                 btn.onclick = () => {
                     selectedPersonality = ans.s;
-                    loadRaceQuestion(); // 다음 질문으로
+                    loadRaceQuestion();
                 };
                 container.appendChild(btn);
             });
         }
 
-        // 2단계: 종족 질문 출력
         function loadRaceQuestion() {
             document.getElementById('question-text').innerText = raceQuestion.q;
             const container = document.getElementById('options-container');
             container.innerHTML = "";
-
             const shuffledRaces = shuffle([...raceQuestion.a]);
-
             shuffledRaces.forEach((ans) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = ans.t;
                 btn.onclick = () => {
                     selectedRace = ans.r;
-                    showFinalResult(); // 최종 결과
+                    showFinalResult();
                 };
                 container.appendChild(btn);
             });
         }
 
-        // 최종 결과 출력
         function showFinalResult() {
             document.getElementById('quiz-screen').style.display = 'none';
             const resultScreen = document.getElementById('result-screen');
-            
             const pText = document.getElementById('result-personality');
             const rText = document.getElementById('result-race');
-
-            resultScreen.style.display = 'block';
-            
-            // 성격 텍스트와 색상
+            resultScreen.style.display = 'flex'; // flex로 변경하여 정렬 유지
             pText.innerText = `성격: ${selectedPersonality}`;
             const colors = {
                 '광기': '#ff4d4d', '냉정': '#4db8ff', '순수': '#ffffff',
                 '활발': '#ffeb3b', '우울': '#9c27b0'
             };
             pText.style.color = colors[selectedPersonality];
-
-            // 종족 텍스트
             rText.innerText = `동행 종족: ${selectedRace}`;
         }
 
