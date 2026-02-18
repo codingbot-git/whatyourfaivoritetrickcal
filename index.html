@@ -139,6 +139,7 @@
         ];
 
         let selectedPersonality = "";
+        let selectedRace = "";
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -182,25 +183,48 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = ans.t;
-                btn.onclick = () => { showFinalResult(ans.r); };
+                btn.onclick = () => { 
+                    selectedRace = ans.r;
+                    if (selectedRace === "미스틱") {
+                        showFinalResult(); // 미스틱은 바로 결과
+                    } else {
+                        loadPositionQuestion(); // 그 외엔 3번째 질문
+                    }
+                };
                 container.appendChild(btn);
             });
         }
 
-        function showFinalResult(race) {
+        // 3번째 질문: 위치 선택
+        function loadPositionQuestion() {
+            document.getElementById('question-text').innerText = "당신이 좋아하는 사도를 지켜주고 싶으면, 어디 열에 있을것인가요?";
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+
+            const positions = ["전열", "중열", "후열"];
+            positions.forEach(pos => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = pos;
+                btn.onclick = () => { showFinalResult(); };
+                container.appendChild(btn);
+            });
+        }
+
+        function showFinalResult() {
             document.getElementById('quiz-screen').style.display = 'none';
             const resultScreen = document.getElementById('result-screen');
             const finalArea = document.getElementById('final-area');
             resultScreen.style.display = 'flex';
 
-            if (race === "미스틱") {
+            if (selectedRace === "미스틱") {
                 finalArea.innerHTML = `
                     <img src="apostle/요미.webp" class="result-image">
                     <div class="result-text">당신의 사도 : 요미</div>
                 `;
             } else {
                 finalArea.innerHTML = `
-                    <div class="result-text" style="color:white; margin: 40px 0;">당신의 사도 : ${race}</div>
+                    <div class="result-text" style="color:white; margin: 40px 0;">당신의 사도 : ${selectedRace}</div>
                 `;
             }
         }
