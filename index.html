@@ -21,60 +21,47 @@
         }
 
         .quiz-container {
-            background: rgba(0, 0, 0, 0.75); padding: 25px; border-radius: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(15px);
-            max-width: 450px; width: 85%; color: white; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-height: 90vh; 
-            display: flex; flex-direction: column;
+            background: rgba(0, 0, 0, 0.85); padding: 30px 20px; border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+            max-width: 400px; width: 80%; color: white; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        h2 { margin-bottom: 20px; font-size: 1.2rem; line-height: 1.5; word-break: keep-all; flex-shrink: 0; }
+        h2 { margin-bottom: 25px; font-size: 1.1rem; line-height: 1.5; word-break: keep-all; }
         
-        .options { 
-            display: flex; flex-direction: column; gap: 8px; 
-            overflow-y: auto;
-            padding-right: 5px;
-        }
+        .options { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 
         .option-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 14px; border-radius: 12px; color: white; cursor: pointer;
-            text-align: left; transition: all 0.2s ease; font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px; border-radius: 12px; color: white; cursor: pointer;
+            text-align: left; transition: all 0.2s; font-size: 0.9rem;
         }
 
-        .option-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.01); border-color: #fff; }
+        .option-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
 
         #result-screen { display: none; }
-        .result-title { font-size: 0.9rem; color: #aaa; margin-bottom: 20px; letter-spacing: 1px; }
-        
-        /* 요미 결과 스타일 */
-        .yomi-result-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 0;
-        }
 
-        .yomi-image {
-            width: 200px; /* 이미지 크기 */
-            height: auto;
+        /* 오직 사진과 사도 이름만 강조하는 스타일 */
+        .apostle-image {
+            width: 220px; height: auto;
             border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid #444;
             margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); /* 은은한 황금빛 광원 */
         }
 
-        .yomi-name-tag {
-            font-size: 1.6rem;
+        .apostle-result-text {
+            font-size: 1.5rem;
             font-weight: bold;
             color: #ffd700;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 30px;
         }
 
-        .retry-btn { margin-top: 10px; background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .retry-btn { 
+            background: #fff; color: #000; border: none; 
+            padding: 12px 30px; border-radius: 50px; 
+            cursor: pointer; font-weight: bold; font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -86,13 +73,9 @@
         </div>
 
         <div id="result-screen" class="quiz-container">
-            <div class="result-title">소환 결과</div>
-            
-            <div id="final-apostle-content" class="yomi-result-box">
+            <div id="result-content">
                 </div>
-
-            <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 20px;">교주님, 선택하신 사도와 함께 무사히 여행하시길!</p>
-            <button class="retry-btn" onclick="location.reload()">다시 소환하기</button>
+            <button class="retry-btn" onclick="location.reload()">다시 하기</button>
         </div>
     </div>
 
@@ -107,49 +90,23 @@
                     { t: "에르핀이 행복하면 된 거야!!", s: "활발" },
                     { t: "에르핀... 왕국도 생각해주면 안 될까...?", s: "우울" }
                 ]
-            },
-            // ... 다른 질문들 생략 (동일하게 작동)
-            {
-                q: "마리가 왕국을 또 터트렸습니다. 당신의 반응은?",
-                a: [
-                    { t: "네 더러운 다이너마이트를 다 니 집에 꽂아서 터트려주겠어.", s: "광기" },
-                    { t: "마리, 지금부터 왕국 복구 전까지 일만 하도록 해.", s: "냉정" },
-                    { t: "마리야? 왕국을 터트렸네? 다음부터 왕국 내에서 터트리지 말아줘.", s: "순수" },
-                    { t: "음... 이거 생각보다 소리가 경쾌했어!", s: "활발" },
-                    { t: "나 범인 아니야 네르, 도끼 들지 마.", s: "우울" }
-                ]
             }
         ];
 
         const allRaces = [
+            { t: "신비롭지만 알 수 없는 사도", r: "미스틱" },
             { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
-            { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" },
-            { t: "지능이 있고, 엘리아스에서 가장 현대적인 사도", r: "엘프" },
-            { t: "뭔가 하나에 꽂히면 그것만 생각하는 사도", r: "용족" },
-            { t: "저마다의 현명함과 박식함을 보유하고 있는 사도", r: "마녀" },
-            { t: "장난을 좋아하는 사도", r: "유령" },
-            { t: "별게 다 있는 사도", r: "정령" },
-            { t: "신비롭지만 알 수 없는 사도", r: "미스틱" }
+            { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" }
         ];
 
         let selectedPersonality = "";
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
         function initQuiz() {
-            const randomIdx = Math.floor(Math.random() * personalityQuestions.length);
-            const selectedQ = personalityQuestions[randomIdx];
+            const selectedQ = personalityQuestions[0];
             document.getElementById('question-text').innerText = selectedQ.q;
             const container = document.getElementById('options-container');
             container.innerHTML = "";
-            const shuffledAnswers = shuffle([...selectedQ.a]);
-            shuffledAnswers.forEach((ans) => {
+            selectedQ.a.forEach((ans) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = ans.t;
@@ -165,20 +122,11 @@
             document.getElementById('question-text').innerText = "당신과 동행할 사도는?";
             const container = document.getElementById('options-container');
             container.innerHTML = "";
-
-            let filteredRaces = allRaces.filter(race => {
-                if (selectedPersonality === "우울") return true;
-                return race.r !== "미스틱";
-            });
-
-            const shuffledRaces = shuffle([...filteredRaces]);
-            shuffledRaces.forEach((ans) => {
+            allRaces.forEach((ans) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = ans.t;
-                btn.onclick = () => {
-                    showFinalResult(ans.r);
-                };
+                btn.onclick = () => { showFinalResult(ans.r); };
                 container.appendChild(btn);
             });
         }
@@ -186,20 +134,19 @@
         function showFinalResult(race) {
             document.getElementById('quiz-screen').style.display = 'none';
             const resultScreen = document.getElementById('result-screen');
-            const finalContent = document.getElementById('final-apostle-content');
-            
+            const resultContent = document.getElementById('result-content');
             resultScreen.style.display = 'flex';
-            finalContent.innerHTML = ''; 
 
             if (race === "미스틱") {
-                // 미스틱일 경우 요미 사진과 텍스트만 노출
-                finalContent.innerHTML = `
-                    <img src="apostle/요미.webp" alt="요미" class="yomi-image">
-                    <div class="yomi-name-tag">당신의 사도 : 요미</div>
+                // 오직 사진과 "당신의 사도 : 요미"만 표시
+                resultContent.innerHTML = `
+                    <img src="apostle/요미.webp" class="apostle-image">
+                    <div class="apostle-result-text">당신의 사도 : 요미</div>
                 `;
             } else {
-                // 다른 종족일 경우 (예시로 텍스트만 표시하거나 다른 이미지를 추가할 수 있음)
-                finalContent.innerHTML = `<div class="yomi-name-tag" style="color:white;">당신의 사도 : ${race}</div>`;
+                resultContent.innerHTML = `
+                    <div class="apostle-result-text">당신의 사도 : ${race}</div>
+                `;
             }
         }
 
