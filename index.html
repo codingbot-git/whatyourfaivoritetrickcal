@@ -54,6 +54,25 @@
         .result-name { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; }
         .result-desc { font-size: 1.1rem; margin-bottom: 20px; color: #fff; }
         .retry-btn { margin-top: 15px; background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+        
+        /* 요미 이미지 스타일 */
+        .yomi-image-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .yomi-image-container img {
+            max-width: 180px; /* 이미지 크기 조절 */
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid #555;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .yomi-apostle-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700; /* 요미 강조 색상 */
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -67,7 +86,10 @@
         <div id="result-screen" class="quiz-container">
             <div class="result-title">당신의 여행 정보</div>
             <div id="result-personality" class="result-name">성격</div>
-            <div id="result-race" class="result-desc">종족</div>
+            
+            <div id="dynamic-result-content">
+                </div>
+
             <p style="font-size: 0.9rem; opacity: 0.8;">교주님, 선택하신 사도와 함께 무사히 여행하시길!</p>
             <button class="retry-btn" onclick="location.reload()">처음부터 다시 하기</button>
         </div>
@@ -190,7 +212,9 @@
             document.getElementById('quiz-screen').style.display = 'none';
             const resultScreen = document.getElementById('result-screen');
             const pText = document.getElementById('result-personality');
-            const rText = document.getElementById('result-race');
+            const dynamicContent = document.getElementById('dynamic-result-content');
+            dynamicContent.innerHTML = ''; // 기존 내용 초기화
+
             resultScreen.style.display = 'flex';
             pText.innerText = `성격: ${selectedPersonality}`;
             const colors = {
@@ -198,7 +222,30 @@
                 '활발': '#ffeb3b', '우울': '#9c27b0'
             };
             pText.style.color = colors[selectedPersonality];
-            rText.innerText = `동행 종족: ${selectedRace}`;
+
+            // 미스틱을 선택했을 때 요미 이미지와 텍스트를 표시
+            if (selectedRace === "미스틱") {
+                const yomiContainer = document.createElement('div');
+                yomiContainer.className = 'yomi-image-container';
+
+                const yomiImage = document.createElement('img');
+                yomiImage.src = 'apostle/요미.webp'; // 요미.webp 파일 경로
+                yomiImage.alt = '요미';
+                yomiContainer.appendChild(yomiImage);
+
+                const yomiText = document.createElement('div');
+                yomiText.className = 'yomi-apostle-text';
+                yomiText.innerText = '당신의 사도 : 요미';
+                yomiContainer.appendChild(yomiText);
+
+                dynamicContent.appendChild(yomiContainer);
+            } else {
+                // 다른 종족일 경우 기존처럼 텍스트 표시
+                const rText = document.createElement('div');
+                rText.className = 'result-desc'; // 기존 스타일 재활용
+                rText.innerText = `동행 종족: ${selectedRace}`;
+                dynamicContent.appendChild(rText);
+            }
         }
 
         initQuiz();
