@@ -20,25 +20,26 @@
         .quiz-container {
             background: rgba(0, 0, 0, 0.75); padding: 30px; border-radius: 20px;
             border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(15px);
-            max-width: 500px; width: 90%; color: white; text-align: center;
+            max-width: 500px; width: 95%; color: white; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         h2 { margin-bottom: 25px; font-size: 1.3rem; line-height: 1.5; word-break: keep-all; }
         
-        .options { display: flex; flex-direction: column; gap: 10px; }
+        .options { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
 
         .option-btn {
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 14px; border-radius: 12px; color: white; cursor: pointer;
-            text-align: left; transition: all 0.2s ease; font-size: 0.95rem;
+            padding: 12px; border-radius: 12px; color: white; cursor: pointer;
+            text-align: left; transition: all 0.2s ease; font-size: 0.9rem;
         }
 
-        .option-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.02); border-color: #fff; }
+        .option-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.01); border-color: #fff; }
 
         #result-screen { display: none; }
         .result-title { font-size: 1.1rem; color: #aaa; margin-bottom: 10px; }
-        .result-name { font-size: 2.5rem; font-weight: bold; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
+        .result-name { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
+        .result-desc { font-size: 1.2rem; margin-bottom: 20px; color: #fff; }
         .retry-btn { margin-top: 20px; background: #fff; color: #000; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
@@ -51,33 +52,35 @@
         </div>
 
         <div id="result-screen" class="quiz-container">
-            <div class="result-title">당신의 성격은...</div>
-            <div id="result-text" class="result-name">성격 이름</div>
-            <p>에르핀과 함께하는 즐거운(?) 교단 생활을 응원합니다!</p>
-            <button class="retry-btn" onclick="location.reload()">다른 질문 받기</button>
+            <div class="result-title">당신의 여행 정보</div>
+            <div id="result-personality" class="result-name">성격</div>
+            <div id="result-race" class="result-desc">종족</div>
+            <p>교주님, 선택하신 사도와 함께 무사히 여행하시길!</p>
+            <button class="retry-btn" onclick="location.reload()">처음부터 다시 하기</button>
         </div>
     </div>
 
     <script>
-        const questions = [
+        // 첫 번째 질문 리스트 (성격 5종 중 랜덤 1개 등장)
+        const personalityQuestions = [
             {
                 q: "에르핀이 교단의 1년치 예산을 전부 간식으로 바꿔버렸습니다! 당신의 반응은?",
                 a: [
                     { t: "에르핀, 네가 사온 간식만큼 꿀밤 맞을래?!", s: "광기" },
-                    { t: "에르핀, 가서 반성문 써와, 내가 허락할때까지", s: "냉정" },
+                    { t: "에르핀, 가서 반성문 써와, 내가 허락할 때까지", s: "냉정" },
                     { t: "에르핀, 다음부터는 더 그러지 말아줘.", s: "순수" },
-                    { t: "에르핀이 행복하면 된거야!!", s: "활발" },
-                    { t: "에르핀... 왕국도 생각해주면 안될까...?", s: "우울" }
+                    { t: "에르핀이 행복하면 된 거야!!", s: "활발" },
+                    { t: "에르핀... 왕국도 생각해주면 안 될까...?", s: "우울" }
                 ]
             },
             {
                 q: "마리가 왕국을 또 터트렸습니다. 당신의 반응은?",
                 a: [
-                    { t: "네 더러운 다이너마이트를 다 니집에 꽂아서 터트려주겠어.", s: "광기" },
+                    { t: "네 더러운 다이너마이트를 다 니 집에 꽂아서 터트려주겠어.", s: "광기" },
                     { t: "마리, 지금부터 왕국 복구 전까지 일만 하도록 해.", s: "냉정" },
                     { t: "마리야? 왕국을 터트렸네? 다음부터 왕국 내에서 터트리지 말아줘.", s: "순수" },
                     { t: "음... 이거 생각보다 소리가 경쾌했어!", s: "활발" },
-                    { t: "나 범인 아니야 네르, 도끼들지마.", s: "우울" }
+                    { t: "나 범인 아니야 네르, 도끼 들지 마.", s: "우울" }
                 ]
             },
             {
@@ -87,20 +90,38 @@
                     { t: "도청장치네? 그냥 냅둬야겠다. 내 알 바 아니니까.", s: "냉정" },
                     { t: "이 도청장치의 주인은 누구지? 궁금하게 만드네?", s: "순수" },
                     { t: "엘레나! 내 목소리가 좋구나!!", s: "활발" },
-                    { t: "나 고민 상담 해주려는건가...", s: "우울" }
+                    { t: "나 고민 상담 해주려는 건가...", s: "우울" }
                 ]
             },
             {
                 q: "사료스탕스가 교단을 침략해왔습니다. 당신의 반응은?",
                 a: [
                     { t: "호랑이 고기... 곰 고기... 여우 고기...? 츄릅...", s: "광기" },
-                    { t: "다음 침략을 대비하기 위해 요정 왕국을 조금 봉쇄해야할까?", s: "냉정" },
+                    { t: "다음 침략을 대비하기 위해 요정 왕국을 조금 봉쇄해야 할까?", s: "냉정" },
                     { t: "사료스탕스들의 깜짝 선물인가?", s: "순수" },
                     { t: "모두들!! 사료스탕스를 막아보자!! 화이팅!!", s: "활발" },
                     { t: "싸워봤자 지겠지... 항복하고 구석에 있자...", s: "우울" }
                 ]
             }
         ];
+
+        // 두 번째 질문 (종족 8종)
+        const raceQuestion = {
+            q: "당신과 동행할 사도는?",
+            a: [
+                { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
+                { t: "세계수에게 기도를하며, 마법을 쓰는 사도", r: "요정" },
+                { t: "지능이 있고, 엘리아스에서 가장 현대적인 사도", r: "엘프" },
+                { t: "뭔가 하나에 꽂히면 그것만 생각하는 사도", r: "용족" },
+                { t: "신비롭지만 알 수 없는 사도", r: "미스틱" },
+                { t: "저마다의 현명함과 박식함을 보유하고 있는 사도", r: "마녀" },
+                { t: "장난을 좋아하는 사도", r: "유령" },
+                { t: "별게 다있는 사도", r: "정령" }
+            ]
+        };
+
+        let selectedPersonality = "";
+        let selectedRace = "";
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -110,38 +131,69 @@
             return array;
         }
 
+        // 1단계: 성격 질문 무작위 출력
         function initQuiz() {
-            const randomIdx = Math.floor(Math.random() * questions.length);
-            const selectedQ = questions[randomIdx];
+            const randomIdx = Math.floor(Math.random() * personalityQuestions.length);
+            const selectedQ = personalityQuestions[randomIdx];
 
             document.getElementById('question-text').innerText = selectedQ.q;
             const container = document.getElementById('options-container');
+            container.innerHTML = "";
             
             const shuffledAnswers = shuffle([...selectedQ.a]);
             
             shuffledAnswers.forEach((ans) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                // 번호 부분을 제거하고 대사(ans.t)만 출력하도록 수정함
                 btn.innerText = ans.t;
-                btn.onclick = () => showFinalResult(ans.s);
+                btn.onclick = () => {
+                    selectedPersonality = ans.s;
+                    loadRaceQuestion(); // 다음 질문으로
+                };
                 container.appendChild(btn);
             });
         }
 
-        function showFinalResult(type) {
+        // 2단계: 종족 질문 출력
+        function loadRaceQuestion() {
+            document.getElementById('question-text').innerText = raceQuestion.q;
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+
+            const shuffledRaces = shuffle([...raceQuestion.a]);
+
+            shuffledRaces.forEach((ans) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = ans.t;
+                btn.onclick = () => {
+                    selectedRace = ans.r;
+                    showFinalResult(); // 최종 결과
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // 최종 결과 출력
+        function showFinalResult() {
             document.getElementById('quiz-screen').style.display = 'none';
             const resultScreen = document.getElementById('result-screen');
-            const resultText = document.getElementById('result-text');
+            
+            const pText = document.getElementById('result-personality');
+            const rText = document.getElementById('result-race');
 
             resultScreen.style.display = 'block';
-            resultText.innerText = type;
-
+            
+            // 성격 텍스트와 색상
+            pText.innerText = `성격: ${selectedPersonality}`;
             const colors = {
                 '광기': '#ff4d4d', '냉정': '#4db8ff', '순수': '#ffffff',
                 '활발': '#ffeb3b', '우울': '#9c27b0'
             };
-            resultText.style.color = colors[type];
+            pText.style.color = colors[selectedPersonality];
+
+            // 종족 텍스트
+            rText.innerText = `동행 종족: ${selectedRace}`;
         }
 
         initQuiz();
