@@ -6,146 +6,140 @@
     <title>What your favorite Trickcal</title>
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
+            margin: 0; padding: 0; height: 100%; overflow: hidden;
             background-color: #000;
             font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
         }
 
         .bg-image {
             background-image: url('background/startingimage.jpg');
-            height: 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;
+            display: flex; justify-content: center; align-items: center;
         }
 
         .quiz-container {
-            background: rgba(0, 0, 0, 0.75);
-            padding: 30px;
-            border-radius: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(15px);
-            max-width: 500px;
-            width: 90%;
-            color: white;
-            text-align: center;
+            background: rgba(0, 0, 0, 0.75); padding: 30px; border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(15px);
+            max-width: 500px; width: 90%; color: white; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        h2 {
-            margin-bottom: 25px;
-            font-size: 1.3rem;
-            line-height: 1.5;
-            word-break: keep-all;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        h2 { margin-bottom: 25px; font-size: 1.3rem; line-height: 1.5; word-break: keep-all; }
+        
+        .options { display: flex; flex-direction: column; gap: 10px; }
 
         .option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 14px;
-            border-radius: 12px;
-            color: white;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s ease;
-            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px; border-radius: 12px; color: white; cursor: pointer;
+            text-align: left; transition: all 0.2s ease; font-size: 0.95rem;
         }
 
-        .option-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.02);
-            border-color: #fff;
-        }
+        .option-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.02); border-color: #fff; }
 
-        /* 결과 화면 스타일 */
-        #result-screen {
-            display: none; /* 처음엔 숨김 */
-        }
-
-        .result-title {
-            font-size: 1.1rem;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-
-        .result-name {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255,255,255,0.5);
-        }
-
-        .retry-btn {
-            margin-top: 20px;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        #result-screen { display: none; }
+        .result-title { font-size: 1.1rem; color: #aaa; margin-bottom: 10px; }
+        .result-name { font-size: 2.5rem; font-weight: bold; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
+        .retry-btn { margin-top: 20px; background: #fff; color: #000; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="bg-image">
         <div id="quiz-screen" class="quiz-container">
-            <h2>에르핀이 교단의 1년치 예산을 <br>전부 간식으로 바꿔버렸습니다! <br>당신의 반응은?</h2>
-            <div class="options">
-                <button class="option-btn" onclick="showResult('광기')">1. 하하하! 목을 비틀어버릴까?!</button>
-                <button class="option-btn" onclick="showResult('냉정')">2. 영수증 다 챙겨와. 에르핀, 넌 오늘부터 무급 노동이다.</button>
-                <button class="option-btn" onclick="showResult('순수')">3. 우와... 저렇게 많은 사탕은 처음 봐!</button>
-                <button class="option-btn" onclick="showResult('활발')">4. 대박! 사탕 파티 시작인 거지? 내가 노래 틀어올게!</button>
-                <button class="option-btn" onclick="showResult('우울')">5. 내 예산도 다 사라졌겠지... 난 이제 굶어 죽을 거야...</button>
-                <button class="option-btn" onclick="showResult('공명')">6. 사탕에서 나오는 달콤한 에너지가... 공간을 뒤흔드는군.</button>
-            </div>
+            <h2 id="question-text">운명의 질문을 불러오는 중...</h2>
+            <div id="options-container" class="options"></div>
         </div>
 
         <div id="result-screen" class="quiz-container">
             <div class="result-title">당신의 성격은...</div>
             <div id="result-text" class="result-name">성격 이름</div>
             <p>에르핀과 함께하는 즐거운(?) 교단 생활을 응원합니다!</p>
-            <button class="retry-btn" onclick="location.reload()">다시 하기</button>
+            <button class="retry-btn" onclick="location.reload()">다른 질문 받기</button>
         </div>
     </div>
 
     <script>
-        function showResult(type) {
-            // 질문 화면 숨기기
-            document.getElementById('quiz-screen').style.display = 'none';
+        const questions = [
+            {
+                q: "에르핀이 교단의 1년치 예산을 전부 간식으로 바꿔버렸습니다! 당신의 반응은?",
+                a: [
+                    { t: "하하하! 목을 비틀어버릴까?!", s: "광기" },
+                    { t: "영수증 다 챙겨와. 에르핀, 넌 오늘부터 무급 노동이다.", s: "냉정" },
+                    { t: "우와... 저렇게 많은 사탕은 처음 봐!", s: "순수" },
+                    { t: "대박! 사탕 파티 시작인 거지? 내가 노래 틀어올게!", s: "활발" },
+                    { t: "내 예산도 다 사라졌겠지... 난 이제 굶어 죽을 거야...", s: "우울" },
+                    { t: "사탕에서 나오는 달콤한 에너지가... 공간을 뒤흔드는군.", s: "공명" }
+                ]
+            },
+            {
+                q: "마리가 왕국을 또 터트렸습니다. 당신의 반응은?",
+                a: [
+                    { t: "폭발은 예술이지! 다음엔 더 크게 가자고!", s: "광기" },
+                    { t: "수리 비용 청구서는 마리네 집으로 보내.", s: "냉정" },
+                    { t: "펑 소리가 너무 예뻤어! 불꽃놀이인가?", s: "순수" },
+                    { t: "와아! 점프력이 상승하는 기분이야! 한 번 더!", s: "활발" },
+                    { t: "내 집도 날아갔을 거야... 이제 어디서 자지...", s: "우울" },
+                    { t: "폭발의 진동이 내 영혼과 공명하고 있어.", s: "공명" }
+                ]
+            },
+            {
+                q: "엘레나가 교단에 붙인 도청장치를 발견했습니다. 당신의 반응은?",
+                a: [
+                    { t: "거기다 대고 하루종일 비명을 질러주지!", s: "광기" },
+                    { t: "역추적해서 엘레나의 약점을 잡아낸다.", s: "냉정" },
+                    { t: "우와! 이거 장난감이야? 말도 하네!", s: "순수" },
+                    { t: "여보세요~? 엘레나! 내 노래 들려?!", s: "활발" },
+                    { t: "내가 하는 한심한 소리를 다 들었겠지...", s: "우울" },
+                    { t: "전파의 흐름이 느껴져... 엘레나, 보고 있나?", s: "공명" }
+                ]
+            },
+            {
+                q: "사료스탕스가 교단을 침략해왔습니다. 당신의 반응은?",
+                a: [
+                    { t: "침략? 오히려 좋아! 피바다를 만들어주마!", s: "광기" },
+                    { t: "방어 병력을 효율적으로 배치하고 반격한다.", s: "냉정" },
+                    { t: "새로운 친구들이 놀러 온 거야?", s: "순수" },
+                    { t: "싸움이야? 나도 끼워줘! 아자아자!", s: "활발" },
+                    { t: "싸워봤자 지겠지... 항복하고 구석에 있자...", s: "우울" },
+                    { t: "적들의 전의(戰意)가 나의 파동과 맞물리는군.", s: "공명" }
+                ]
+            }
+        ];
+
+        function initQuiz() {
+            // 0, 1, 2, 3 중 하나를 랜덤하게 선택 (각 25% 확률)
+            const randomIdx = Math.floor(Math.random() * questions.length);
+            const selectedQ = questions[randomIdx];
+
+            document.getElementById('question-text').innerText = selectedQ.q;
+            const container = document.getElementById('options-container');
             
-            // 결과 화면 보이기
+            selectedQ.a.forEach((ans, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = `${i + 1}. ${ans.t}`;
+                btn.onclick = () => showFinalResult(ans.s);
+                container.appendChild(btn);
+            });
+        }
+
+        function showFinalResult(type) {
+            document.getElementById('quiz-screen').style.display = 'none';
             const resultScreen = document.getElementById('result-screen');
             const resultText = document.getElementById('result-text');
-            
+
             resultScreen.style.display = 'block';
             resultText.innerText = type;
 
-            // 성격별 포인트 컬러 (선택사항)
             const colors = {
-                '광기': '#ff4d4d',
-                '냉정': '#4db8ff',
-                '순수': '#ffffff',
-                '활발': '#ffeb3b',
-                '우울': '#9c27b0',
-                '공명': '#00ff95'
+                '광기': '#ff4d4d', '냉정': '#4db8ff', '순수': '#ffffff',
+                '활발': '#ffeb3b', '우울': '#9c27b0', '공명': '#00ff95'
             };
             resultText.style.color = colors[type];
         }
-    </script>
 
+        // 실행
+        initQuiz();
+    </script>
 </body>
 </html>
