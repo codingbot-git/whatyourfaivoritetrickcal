@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>What your favorite Trickcal</title>
     <style>
-        /* 전체 화면 스크롤 제거 */
         body, html {
             margin: 0; padding: 0; 
             height: 100%; width: 100%;
-            overflow: hidden; /* 외부 스크롤 원천 차단 */
+            overflow: hidden;
             background-color: #000;
             font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
         }
@@ -26,21 +25,18 @@
             border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(15px);
             max-width: 450px; width: 85%; color: white; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            /* 컨테이너 자체가 화면보다 커지지 않게 제한 */
             max-height: 90vh; 
             display: flex; flex-direction: column;
         }
 
         h2 { margin-bottom: 20px; font-size: 1.2rem; line-height: 1.5; word-break: keep-all; flex-shrink: 0; }
         
-        /* 선택지 영역 - 이 안에서만 스크롤이 생기도록 설정 */
         .options { 
             display: flex; flex-direction: column; gap: 8px; 
-            overflow-y: auto; /* 내용이 많으면 내부에서만 스크롤 */
+            overflow-y: auto;
             padding-right: 5px;
         }
 
-        /* 내부 스크롤바 디자인 (크롬/사파리) */
         .options::-webkit-scrollbar { width: 5px; }
         .options::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
 
@@ -48,7 +44,7 @@
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 14px; border-radius: 12px; color: white; cursor: pointer;
             text-align: left; transition: all 0.2s ease; font-size: 0.9rem;
-            flex-shrink: 0; /* 버튼 형태 유지 */
+            flex-shrink: 0;
         }
 
         .option-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.01); border-color: #fff; }
@@ -121,19 +117,17 @@
             }
         ];
 
-        const raceQuestion = {
-            q: "당신과 동행할 사도는?",
-            a: [
-                { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
-                { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" },
-                { t: "지능이 있고, 엘리아스에서 가장 현대적인 사도", r: "엘프" },
-                { t: "뭔가 하나에 꽂히면 그것만 생각하는 사도", r: "용족" },
-                { t: "신비롭지만 알 수 없는 사도", r: "미스틱" },
-                { t: "저마다의 현명함과 박식함을 보유하고 있는 사도", r: "마녀" },
-                { t: "장난을 좋아하는 사도", r: "유령" },
-                { t: "별게 다 있는 사도", r: "정령" }
-            ]
-        };
+        // 종족 전체 데이터
+        const allRaces = [
+            { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
+            { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" },
+            { t: "지능이 있고, 엘리아스에서 가장 현대적인 사도", r: "엘프" },
+            { t: "뭔가 하나에 꽂히면 그것만 생각하는 사도", r: "용족" },
+            { t: "저마다의 현명함과 박식함을 보유하고 있는 사도", r: "마녀" },
+            { t: "장난을 좋아하는 사도", r: "유령" },
+            { t: "별게 다 있는 사도", r: "정령" },
+            { t: "신비롭지만 알 수 없는 사도", r: "미스틱" }
+        ];
 
         let selectedPersonality = "";
         let selectedRace = "";
@@ -159,6 +153,7 @@
                 btn.innerText = ans.t;
                 btn.onclick = () => {
                     selectedPersonality = ans.s;
+                    console.log("선택된 성격:", selectedPersonality); // 디버깅용
                     loadRaceQuestion();
                 };
                 container.appendChild(btn);
@@ -166,10 +161,19 @@
         }
 
         function loadRaceQuestion() {
-            document.getElementById('question-text').innerText = raceQuestion.q;
+            document.getElementById('question-text').innerText = "당신과 동행할 사도는?";
             const container = document.getElementById('options-container');
             container.innerHTML = "";
-            const shuffledRaces = shuffle([...raceQuestion.a]);
+
+            // 필터링 핵심: '우울'이 아닐 때 미스틱(r: "미스틱")을 리스트에서 완전히 제외
+            let filteredRaces = allRaces.filter(race => {
+                if (selectedPersonality === "우울") return true; // 우울이면 다 보여줌
+                return race.r !== "미스틱"; // 우울이 아니면 미스틱 제거
+            });
+
+            // 필터링된 리스트를 셔플
+            const shuffledRaces = shuffle([...filteredRaces]);
+
             shuffledRaces.forEach((ans) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
@@ -187,7 +191,7 @@
             const resultScreen = document.getElementById('result-screen');
             const pText = document.getElementById('result-personality');
             const rText = document.getElementById('result-race');
-            resultScreen.style.display = 'flex'; // flex로 변경하여 정렬 유지
+            resultScreen.style.display = 'flex';
             pText.innerText = `성격: ${selectedPersonality}`;
             const colors = {
                 '광기': '#ff4d4d', '냉정': '#4db8ff', '순수': '#ffffff',
