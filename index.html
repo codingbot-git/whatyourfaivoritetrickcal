@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>What your favorite Trickcal</title>
+    <title>당신의 최애 사도 뽑기</title>
     <style>
         body, html {
             margin: 0; padding: 0; 
@@ -80,7 +80,6 @@
     </div>
 
     <script>
-        // 1. 성격 질문 데이터 (4개 전체 복구)
         const personalityQuestions = [
             {
                 q: "에르핀이 교단의 1년치 예산을 전부 간식으로 바꿔버렸습니다! 당신의 반응은?",
@@ -113,7 +112,7 @@
                 ]
             },
             {
-                q: "사료스탕스가 교단을 침략해왔습니다. 당신의 반응은?",
+                q: "사료스탕스가 교단에 침략해왔습니다. 당신의 반응은?",
                 a: [
                     { t: "호랑이 고기... 곰 고기... 여우 고기...? 츄릅...", r: "광기" },
                     { t: "다음 침략을 대비하기 위해 요정 왕국을 조금 봉쇄해야 할까?", r: "냉정" },
@@ -124,7 +123,6 @@
             }
         ];
 
-        // 2. 종족 질문 데이터
         const allRaces = [
             { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
             { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" },
@@ -136,18 +134,9 @@
             { t: "신비롭지만 알 수 없는 사도", r: "미스틱" }
         ];
 
-        // 3. 위치 질문 데이터 (t, r 형식 통일)
-        const positionQuestion = {
-            q: "당신이 좋아하는 사도를 지켜주고 싶으면, 어디 열에 있을것인가요?",
-            a: [
-                { t: "당당하게 용기를 가지고 ", r: "전열" },
-                { t: "중열", r: "중열" },
-                { t: "후열", r: "후열" }
-            ]
-        };
-
         let selectedPersonality = "";
         let selectedRace = "";
+        let selectedPos = "";
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -194,8 +183,16 @@
         }
 
         function loadPositionQuestion() {
-            document.getElementById('question-text').innerText = positionQuestion.q;
-            createButtons(positionQuestion.a, () => {
+            document.getElementById('question-text').innerText = "당신이 좋아하는 사도를 지켜주고 싶으면, 어디 열에 있을것인가요?";
+            let options = [
+                { t: "전열", r: "전열" },
+                { t: "중열", r: "중열" },
+                { t: "후열", r: "후열" }
+            ];
+            if (selectedRace === "요정") options.push({ t: "모든 열", r: "모든 열" });
+
+            createButtons(options, (pos) => {
+                selectedPos = pos;
                 showFinalResult();
             });
         }
@@ -206,12 +203,22 @@
             const finalArea = document.getElementById('final-area');
             resultScreen.style.display = 'flex';
 
+            // 미스틱 -> 요미
             if (selectedRace === "미스틱") {
                 finalArea.innerHTML = `
                     <img src="apostle/요미.webp" class="result-image">
                     <div class="result-text">당신의 사도 : 요미</div>
                 `;
-            } else {
+            } 
+            // 요정 + 모든 열 -> 죠안
+            else if (selectedRace === "요정" && selectedPos === "모든 열") {
+                finalArea.innerHTML = `
+                    <img src="apostle/죠안.png" class="result-image">
+                    <div class="result-text">당신의 사도 : 죠안</div>
+                `;
+            }
+            // 그 외 일반 종족 결과
+            else {
                 finalArea.innerHTML = `<div class="result-text" style="color:white; margin: 40px 0;">당신의 사도 : ${selectedRace}</div>`;
             }
         }
