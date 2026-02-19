@@ -1,299 +1,276 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>당신의 최애 사도 뽑기</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>당신의 최애 사도 뽑기</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; 
+            height: 100%; width: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+        }
 
-<style>
-body, html {
-    margin: 0; padding: 0;
-    width: 100%; height: 100%;
-    background: #000;
-    overflow: hidden;
-    font-family: 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-}
+        .bg-image {
+            background-image: url('background/startingimage.jpg');
+            height: 100%; width: 100%;
+            background-position: center; background-repeat: no-repeat; background-size: cover;
+            display: flex; justify-content: center; align-items: center;
+        }
 
-.bg-image {
-    background-image: url('background/startingimage.jpg');
-    background-size: cover;
-    background-position: center;
-    width: 100%; height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .quiz-container {
+            background: rgba(0, 0, 0, 0.8); padding: 30px 20px; border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+            max-width: 450px; width: 85%; color: white; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            max-height: 90vh; display: flex; flex-direction: column;
+        }
 
-.quiz-container {
-    background: rgba(0,0,0,0.8);
-    padding: 30px 20px;
-    border-radius: 20px;
-    width: 85%;
-    max-width: 450px;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    color: #fff;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-}
+        h2 { margin-bottom: 20px; font-size: 1.1rem; line-height: 1.5; word-break: keep-all; flex-shrink: 0; }
+        
+        .options { 
+            display: flex; flex-direction: column; gap: 8px; 
+            overflow-y: auto; padding-right: 5px;
+        }
 
-h2 {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    flex-shrink: 0;
-}
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px; border-radius: 12px; color: white; cursor: pointer;
+            text-align: left; transition: all 0.2s ease; font-size: 0.85rem;
+        }
 
-.options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow-y: auto;
-}
+        .option-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
 
-.option-btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 12px;
-    padding: 14px;
-    color: #fff;
-    font-size: 0.85rem;
-    cursor: pointer;
-    text-align: left;
-    transition: 0.2s;
-}
+        #result-screen { display: none; align-items: center; justify-content: center; }
 
-.option-btn:hover {
-    background: rgba(255,255,255,0.2);
-    border-color: #fff;
-}
+        .result-image {
+            width: 200px; height: auto;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+            margin-bottom: 20px;
+        }
 
-#result-screen {
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
+        .result-text {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 25px;
+        }
 
-.result-image {
-    width: 200px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-}
-
-.result-text {
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #ffd700;
-    margin-bottom: 20px;
-}
-
-.retry-btn {
-    border: none;
-    padding: 12px 30px;
-    border-radius: 50px;
-    font-weight: bold;
-    cursor: pointer;
-}
-</style>
+        .retry-btn { 
+            background: #fff; color: #000; border: none; padding: 12px 30px; 
+            border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 10px;
+        }
+    </style>
 </head>
-
 <body>
-<div class="bg-image">
 
-<div id="quiz-screen" class="quiz-container">
-    <h2 id="question-text"></h2>
-    <div id="options-container" class="options"></div>
-</div>
+    <div class="bg-image">
+        <div id="quiz-screen" class="quiz-container">
+            <h2 id="question-text">운명의 질문을 불러오는 중...</h2>
+            <div id="options-container" class="options"></div>
+        </div>
 
-<div id="result-screen" class="quiz-container">
-    <div id="final-area" style="text-align:center;"></div>
-    <button class="retry-btn" onclick="location.reload()">다시 하기</button>
-</div>
+        <div id="result-screen" class="quiz-container">
+            <div id="final-area" style="display: flex; flex-direction: column; align-items: center;"></div>
+            <button class="retry-btn" onclick="location.reload()">다시 하기</button>
+        </div>
+    </div>
 
-</div>
+    <script>
+        /* --- 1단계: 성격 질문 (4가지 모두 복구) --- */
+        const personalityQuestions = [
+            {
+                q: "에르핀이 교단의 1년치 예산을 전부 간식으로 바꿔버렸습니다! 당신의 반응은?",
+                a: [
+                    { t: "에르핀, 네가 사온 간식만큼 꿀밤 맞을래?!", r: "광기" },
+                    { t: "에르핀, 가서 반성문 써와, 내가 허락할 때까지", r: "냉정" },
+                    { t: "에르핀, 다음부터는 더 그러지 말아줘.", r: "순수" },
+                    { t: "에르핀이 행복하면 된 거야!!", r: "활발" },
+                    { t: "에르핀... 왕국도 생각해주면 안 될까...?", r: "우울" }
+                ]
+            },
+            {
+                q: "마리가 왕국을 또 터트렸습니다. 당신의 반응은?",
+                a: [
+                    { t: "네 더러운 다이너마이트를 다 니 집에 꽂아서 터트려주겠어.", r: "광기" },
+                    { t: "마리, 지금부터 왕국 복구 전까지 일만 하도록 해.", r: "냉정" },
+                    { t: "마리야? 왕국을 터트렸네? 다음부터 왕국 내에서 터트리지 말아줘.", r: "순수" },
+                    { t: "음... 이거 생각보다 소리가 경쾌했어!", r: "활발" },
+                    { t: "나 범인 아니야 네르, 도끼 들지 마.", r: "우울" }
+                ]
+            },
+            {
+                q: "엘레나가 교단에 붙인 도청장치를 발견했습니다. 당신의 반응은?",
+                a: [
+                    { t: "감히 도청장치를 설치해? 네 연구실에 역으로 숨겨주겠어.", r: "광기" },
+                    { t: "도청장치네? 그냥 냅둬야겠다. 내 알 바 아니니까.", r: "냉정" },
+                    { t: "이 도청장치의 주인은 누구지? 궁금하게 만드네?", r: "순수" },
+                    { t: "엘레나! 내 목소리가 좋구나!!", r: "활발" },
+                    { t: "나 고민 상담 해주려는 건가...", r: "우울" }
+                ]
+            },
+            {
+                q: "사료스탕스가 교단에 침략해왔습니다. 당신의 반응은?",
+                a: [
+                    { t: "호랑이 고기... 곰 고기... 여우 고기...? 츄릅...", r: "광기" },
+                    { t: "다음 침략을 대비하기 위해 요정 왕국을 조금 봉쇄해야 할까?", r: "냉정" },
+                    { t: "사료스탕스들의 깜짝 선물인가?", r: "순수" },
+                    { t: "모두들!! 사료스탕스를 막아보자!! 화이팅!!", r: "활발" },
+                    { t: "싸워봤자 지겠지... 항복하고 구석에 있자...", r: "우울" }
+                ]
+            }
+        ];
 
-<script>
-/* ================= 공통 유틸 ================= */
+        /* --- 2단계: 종족 리스트 --- */
+        const allRaces = [
+            { t: "무리지어 살며, 친화력이 좋은 사도", r: "수인" },
+            { t: "세계수에게 기도를 하며, 마법을 쓰는 사도", r: "요정" },
+            { t: "지능이 있고, 엘리아스에서 가장 현대적인 사도", r: "엘프" },
+            { t: "뭔가 하나에 꽂히면 그것만 생각하는 사도", r: "용족" },
+            { t: "저마다의 현명함과 박식함을 보유하고 있는 사도", r: "마녀" },
+            { t: "장난을 좋아하는 사도", r: "유령" },
+            { t: "별게 다 있는 사도", r: "정령" },
+            { t: "신비롭지만 알 수 없는 사도", r: "미스틱" }
+        ];
 
-function shuffle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
+        /* --- 4단계: 물리/마법 상황 질문 (질문당 답 6개) --- */
+        const situationQuestions = [
+            {
+                q: "당신이 따잇 당하고 있는 비비를 마주쳤습니다, 어떻게 끝낼건가요?",
+                a: [
+                    { t: "(물리) 일단 비비를 들고 냅다 튄다", r: "물리" },
+                    { t: "(물리) 비비를 때린 놈의 뚝배기를 깨버린다", r: "물리" },
+                    { t: "(물리) 비비를 가로막고 적을 메쳐버린다", r: "물리" },
+                    { t: "(마법) 시간 정지 마법을 걸고 비비를 구출한다", r: "마법" },
+                    { t: "(마법) 강력한 폭발 마법으로 적들을 날려버린다", r: "마법" },
+                    { t: "(마법) 비비에게 무적 보호막을 걸어 보호한다", r: "마법" }
+                ]
+            },
+            {
+                q: "마리가 집 천장에 끼어있습니다, 어떻게 하실건가요?",
+                a: [
+                    { t: "(물리) 천장을 망치로 부수고 마리를 꺼낸다", r: "물리" },
+                    { t: "(물리) 마리의 발을 잡고 힘껏 잡아당긴다", r: "물리" },
+                    { t: "(물리) 밑에서 사다리를 놓고 마리를 밀어 올린다", r: "물리" },
+                    { t: "(마법) 부유 마법을 걸어 몸을 가볍게 만든다", r: "마법" },
+                    { t: "(마법) 차원 이동 마법으로 마리만 쏙 빼낸다", r: "마법" },
+                    { t: "(마법) 염력을 사용하여 천천히 마리를 뽑아낸다", r: "마법" }
+                ]
+            }
+        ];
 
-function renderQuestion(question, callback) {
-    document.getElementById("question-text").innerText = question.q;
-    const container = document.getElementById("options-container");
-    container.innerHTML = "";
+        let selectedPersonality = "";
+        let selectedRace = "";
+        let selectedPos = "";
+        let methodScore = { 물리: 0, 마법: 0 };
+        let situationIdx = 0;
 
-    shuffle([...question.options]).forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "option-btn";
-        btn.innerText = opt.text;
-        btn.onclick = () => callback(opt.value);
-        container.appendChild(btn);
-    });
-}
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-/* ================= 데이터 ================= */
+        function createButtons(options, callback) {
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            shuffle([...options]).forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = item.t;
+                btn.onclick = () => callback(item.r);
+                container.appendChild(btn);
+            });
+        }
 
-// 1단계 성격
-const personalityQuestions = [
-{
-    q: "에르핀이 교단 예산을 전부 간식으로 바꿨다!",
-    options: [
-        { text: "꿀밤부터 간다", value: "광기" },
-        { text: "반성문부터", value: "냉정" },
-        { text: "다음엔 그러지 말자", value: "순수" },
-        { text: "행복하면 됐다", value: "활발" },
-        { text: "내가 대신 혼날게", value: "우울" }
-    ]
-},
-{
-    q: "마리가 왕국을 또 터뜨렸다!",
-    options: [
-        { text: "더 크게 터뜨려준다", value: "광기" },
-        { text: "복구 끝날 때까지 노동", value: "냉정" },
-        { text: "다음부턴 밖에서", value: "순수" },
-        { text: "소리 시원했다", value: "활발" },
-        { text: "난 범인 아니다", value: "우울" }
-    ]
-}
-];
+        // [1단계 시작] 성격
+        function initQuiz() {
+            const randomIdx = Math.floor(Math.random() * personalityQuestions.length);
+            const questionData = personalityQuestions[randomIdx];
+            document.getElementById('question-text').innerText = questionData.q;
+            createButtons(questionData.a, (val) => {
+                selectedPersonality = val;
+                loadRaceQuestion(); // 2단계로
+            });
+        }
 
-// 2단계 종족
-const raceQuestion = {
-q: "당신과 동행할 사도는?",
-options: [
-    { text: "친화력 좋은 무리 사도", value: "수인" },
-    { text: "마법과 세계수", value: "요정" },
-    { text: "가장 현대적인 사도", value: "엘프" },
-    { text: "한 가지에 집착", value: "용족" },
-    { text: "현명한 박식가", value: "마녀" },
-    { text: "장난꾸러기", value: "유령" },
-    { text: "별게 다 있다", value: "정령" },
-    { text: "정체불명", value: "미스틱" }
-]
-};
+        // [2단계] 종족
+        function loadRaceQuestion() {
+            document.getElementById('question-text').innerText = "당신과 동행할 사도는?";
+            let filteredRaces = allRaces.filter(race => {
+                if (selectedPersonality === "우울") return true;
+                return race.r !== "미스틱";
+            });
 
-// 3단계 위치
-function getPositionQuestion() {
-    let opts = [
-        { text: "전열", value: "전열" },
-        { text: "중열", value: "중열" },
-        { text: "후열", value: "후열" }
-    ];
+            createButtons(filteredRaces, (val) => {
+                selectedRace = val;
+                if (selectedRace === "미스틱") showFinalResult();
+                else loadPositionQuestion(); // 3단계로
+            });
+        }
 
-    if (
-        (selectedPersonality === "우울" && selectedRace === "요정") ||
-        (selectedPersonality === "광기" && selectedRace === "수인")
-    ) {
-        opts.push({ text: "모든 열", value: "모든 열" });
-    }
+        // [3단계] 위치 (순서 수정 완료)
+        function loadPositionQuestion() {
+            document.getElementById('question-text').innerText = "당신이 좋아하는 사도를 지켜주고 싶으면, 어디 열에 있을것인가요?";
+            let posOptions = [
+                { t: "모두를 지킬 든든한 전열", r: "전열" },
+                { t: "딱 평균적인 중열", r: "중열" },
+                { t: "저격하기 좋은 후열", r: "후열" }
+            ];
 
-    return { q: "어디에서 사도를 지키겠습니까?", options: opts };
-}
+            if ((selectedPersonality === "우울" && selectedRace === "요정") || 
+                (selectedPersonality === "광기" && selectedRace === "수인")) {
+                posOptions.push({ t: "그 어디에 있어도 완벽한 모든 열", r: "모든 열" });
+            }
 
-// 4단계 물리/마법
-const methodQuestions = [
-{
-    q: "비비가 따잇 당하고 있다!",
-    options: [
-        { text: "들고 튄다", value: "물리" },
-        { text: "더 세게 친다", value: "물리" },
-        { text: "앞에서 메친다", value: "물리" },
-        { text: "시간 정지", value: "마법" },
-        { text: "폭발 마법", value: "마법" },
-        { text: "보호막", value: "마법" }
-    ]
-},
-{
-    q: "마리가 천장에 끼었다!",
-    options: [
-        { text: "부수고 꺼낸다", value: "물리" },
-        { text: "잡아당긴다", value: "물리" },
-        { text: "직접 밀어낸다", value: "물리" },
-        { text: "부유 마법", value: "마법" },
-        { text: "공간 왜곡", value: "마법" },
-        { text: "염력", value: "마법" }
-    ]
-}
-];
+            createButtons(posOptions, (pos) => {
+                selectedPos = pos;
+                loadSituationQuestion(); // 4단계로
+            });
+        }
 
-/* ================= 상태 ================= */
+        // [4단계] 물리/마법 상황
+        function loadSituationQuestion() {
+            const qData = situationQuestions[situationIdx];
+            document.getElementById('question-text').innerText = qData.q;
 
-let selectedPersonality = "";
-let selectedRace = "";
-let selectedPos = "";
-let methodScore = { 물리: 0, 마법: 0 };
-let methodIdx = 0;
+            createButtons(qData.a, (val) => {
+                methodScore[val]++;
+                situationIdx++;
+                if (situationIdx < situationQuestions.length) loadSituationQuestion();
+                else showFinalResult();
+            });
+        }
 
-/* ================= 흐름 ================= */
+        // [결과 출력]
+        function showFinalResult() {
+            document.getElementById('quiz-screen').style.display = 'none';
+            const resultScreen = document.getElementById('result-screen');
+            const finalArea = document.getElementById('final-area');
+            resultScreen.style.display = 'flex';
 
-function startQuiz() {
-    const q = personalityQuestions[Math.floor(Math.random() * personalityQuestions.length)];
-    renderQuestion(q, val => {
-        selectedPersonality = val;
-        loadRace();
-    });
-}
+            let resultImg = "";
+            let resultName = selectedRace;
 
-function loadRace() {
-    let opts = raceQuestion.options.filter(o =>
-        selectedPersonality === "우울" ? true : o.value !== "미스틱"
-    );
+            if (selectedRace === "미스틱") { resultImg = "apostle/요미.webp"; resultName = "요미"; }
+            else if (selectedRace === "요정" && selectedPos === "모든 열") { resultImg = "apostle/죠안.png"; resultName = "죠안"; }
+            else if (selectedRace === "수인" && selectedPos === "모든 열") { resultImg = "apostle/티그 영웅.webp"; resultName = "티그(영웅)"; }
 
-    renderQuestion({ q: raceQuestion.q, options: opts }, val => {
-        selectedRace = val;
-        if (val === "미스틱") showResult();
-        else loadPosition();
-    });
-}
+            const tendency = methodScore.물리 >= methodScore.마법 ? "강력한 물리파" : "신비로운 마법파";
 
-function loadPosition() {
-    renderQuestion(getPositionQuestion(), val => {
-        selectedPos = val;
-        loadMethod();
-    });
-}
+            finalArea.innerHTML = resultImg ? 
+                `<img src="${resultImg}" class="result-image"><div class="result-text">당신의 사도 : ${resultName}</div>` : 
+                `<div class="result-text" style="color:white; margin: 40px 0;">당신의 사도 : ${resultName}</div>`;
+            
+            finalArea.innerHTML += `<div style="color:#aaa;">성향: ${tendency}</div>`;
+        }
 
-function loadMethod() {
-    renderQuestion(methodQuestions[methodIdx], val => {
-        methodScore[val]++;
-        methodIdx++;
-        methodIdx < methodQuestions.length ? loadMethod() : showResult();
-    });
-}
-
-function showResult() {
-    document.getElementById("quiz-screen").style.display = "none";
-    document.getElementById("result-screen").style.display = "flex";
-
-    let name = selectedRace;
-    let img = "";
-
-    if (selectedRace === "미스틱") {
-        name = "요미";
-        img = "apostle/요미.webp";
-    }
-    if (selectedRace === "요정" && selectedPos === "모든 열") {
-        name = "죠안";
-        img = "apostle/죠안.png";
-    }
-    if (selectedRace === "수인" && selectedPos === "모든 열") {
-        name = "티그(영웅)";
-        img = "apostle/티그 영웅.webp";
-    }
-
-    document.getElementById("final-area").innerHTML = `
-        ${img ? `<img src="${img}" class="result-image">` : ""}
-        <div class="result-text">당신의 사도 : ${name}</div>
-        <div style="color:#aaa;">성향: ${methodScore.물리 >= methodScore.마법 ? "물리" : "마법"}</div>
-    `;
-}
-
-window.onload = startQuiz;
-</script>
+        window.onload = initQuiz;
+    </script>
 </body>
 </html>
